@@ -52,10 +52,9 @@ SMODS.Joker{
 
     calculate = function(self, card, context)
 
+		--thanks N' and SDM_0 on discord for helping with this
         if context.after and SMODS.pseudorandom_probability(card, "black_spot", 4, 10) then
-
             SMODS.destroy_cards(context.scoring_hand)
-
             return {
                 message = "Marked!",
                 colour = {0, 0, 0, 1}
