@@ -25,6 +25,16 @@ SMODS.Atlas {
 	py = 95
 }
 
+SMODS.Atlas {
+	-- Key for code to find it with
+	key = "KissedStamp",
+	-- The name of the file, for the code to pull the atlas from
+	path = "KissedStamp.png",
+	-- Width of each sprite in 1x size
+	px = 71,
+	-- Height of each sprite in 1x size
+	py = 95
+}
 
 
 SMODS.Joker{
@@ -91,6 +101,72 @@ SMODS.Joker {
         return { vars = { number_format(10000) } }
     end,
     
+}
+
+-- Red Seal
+SMODS.Seal {
+	name = "Kiss",
+    key = 'Kiss',
+	atlas = "KissedStamp",
+    pos = { x = 0, y = 0 },
+    config = { extra = { retriggers = 1 } },
+    badge_colour = G.C.RED,
+	loc_txt = {
+		label = 'Kiss',
+        name = "Kiss",
+
+        text = {
+            "Retrigger this card 1 time",
+			"(Litterally just red seal)"
+        }
+    },
+    calculate = function(self, card, context)
+        if context.repetition then
+            return {
+                repetitions = card.ability.seal.extra.retriggers,
+            }
+        end
+    end,
+    loc_vars = function(self, info_queue, card)
+        return { vars = { self.config.extra.retriggers } }
+    end
+}
+
+-- Red Seal Joker
+SMODS.Joker{
+    key = "Boykisser",
+    rarity = 4,
+    cost = 5,
+    atlas = "ModdedVanilla",
+    pos = { x = 0, y = 1 },
+	soul_pos = { x = 4, y = 1 },
+    loc_txt = {
+        name = "Boykisser",
+        text = {
+            "After scoring,",
+            "Kiss a random {C:attention}King{}",
+            "or {C:attention}Jack{}"
+        }
+    },
+
+    calculate = function(self, card, context)
+       
+        if context.after then
+            local played_cards = context.scoring_hand or {}
+            if #played_cards > 0 then
+                
+                local target_card = pseudorandom_element(played_cards, "seed")
+				 if target_card:get_id() == 11 or target_card:get_id() == 13 then
+                	target_card:set_seal("Typ0_Kiss",false,true)
+				
+					return {
+						message = "Kissed!",
+						colour = {1, 0, 0, 1}
+					}
+				end	
+            end
+        end
+    end
 }
 
 
