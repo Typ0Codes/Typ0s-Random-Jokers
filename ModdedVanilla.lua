@@ -42,6 +42,7 @@ SMODS.Joker{
     rarity = 3,
     cost = 8,
     atlas = "ModdedVanilla",
+    blueprint_compat = false,
     pos = { x = 0, y = 0 },
 	loc_txt = {
         name = "Black Spot",
@@ -85,7 +86,6 @@ SMODS.Joker {
         }
     },
     blueprint_compat = false,
-    discovered = true,
     rarity = 2,
     cost = 5,
 	atlas = "ModdedVanilla",
@@ -140,12 +140,16 @@ SMODS.Joker{
     atlas = "ModdedVanilla",
     pos = { x = 0, y = 1 },
 	soul_pos = { x = 4, y = 1 },
+    blueprint_compat = false,
     loc_txt = {
         name = "Boykisser",
         text = {
             "After scoring,",
-            "Kiss a random {C:attention}King{}",
-            "or {C:attention}Jack{}"
+            "Attempt to kiss a",
+            "random played card,",
+            "if it's a {C:attention}King{}",
+            "or {C:attention}Jack{},",
+            "give it a {C:red}Kiss{}"
         }
     },
 
@@ -156,11 +160,16 @@ SMODS.Joker{
             if #played_cards > 0 then
                 
                 local target_card = pseudorandom_element(played_cards, "seed")
-				 if target_card:get_id() == 11 or target_card:get_id() == 13 then
+				 if (target_card:get_id() == 11 or target_card:get_id() == 13) and not (target_card.ability and target_card.ability.seal) then
                 	target_card:set_seal("Typ0_Kiss",false,true)
 				
 					return {
 						message = "Kissed!",
+						colour = {1, 0, 0, 1}
+					}
+                else
+                    return {
+						message = "Nah Im Gay",
 						colour = {1, 0, 0, 1}
 					}
 				end	
@@ -170,58 +179,39 @@ SMODS.Joker{
 }
 
 SMODS.Joker {
-	-- How the code refers to the joker.
+
 	key = 'cooljimbo',
-	-- loc_text is the actual name and description that show in-game for the card.
+
 	loc_txt = {
 		name = 'Cool Jimbo',
 		text = {
-			--[[
-			The #1# is a variable that's stored in config, and is put into loc_vars.
-			The {C:} is a color modifier, and uses the color "mult" for the "+#1# " part, and then the empty {} is to reset all formatting, so that Mult remains uncolored.
-				There's {X:}, which sets the background, usually used for XMult.
-				There's {s:}, which is scale, and multiplies the text size by the value, like 0.8
-				There's one more, {V:1}, but is more advanced, and is used in Castle and Ancient Jokers. It allows for a variable to dynamically change the color. You can find an example in the Castle joker if needed.
-				Multiple variables can be used in one space, as long as you separate them with a comma. {C:attention, X:chips, s:1.3} would be the yellow attention color, with a blue chips-colored background,, and 1.3 times the scale of other text.
-				You can find the vanilla joker descriptions and names as well as several other things in the localization files.
-				]]
 			"{C:mult}+#1# {} Mult"
 		}
 	},
-	--[[
-		Config sets all the variables for your card, you want to put all numbers here.
-		This is really useful for scaling numbers, but should be done with static numbers -
-		If you want to change the static value, you'd only change this number, instead
-		of going through all your code to change each instance individually.
-		]]
+
 	config = { extra = { mult = 8 } },
-	-- loc_vars gives your loc_text variables to work with, in the format of #n#, n being the variable in order.
-	-- #1# is the first variable in vars, #2# the second, #3# the third, and so on.
-	-- It's also where you'd add to the info_queue, which is where things like the negative tooltip are.
+
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.mult } }
 	end,
-	-- Sets rarity. 1 common, 2 uncommon, 3 rare, 4 legendary.
+
 	rarity = 1,
-	-- Which atlas key to pull from.
+
 	atlas = 'ModdedVanilla',
-	-- This card's position on the atlas, starting at {x=0,y=0} for the very top left.
+
 	pos = { x = 2, y = 0 },
-	-- Cost of card in shop.
+
 	cost = 2,
-	-- The functioning part of the joker, looks at context to decide what step of scoring the game is on, and then gives a 'return' value if something activates.
+    blueprint_compat = false,
+
 	calculate = function(self, card, context)
-		-- Tests if context.joker_main == true.
-		-- joker_main is a SMODS specific thing, and is where the effects of jokers that just give +stuff in the joker area area triggered, like Joker giving +Mult, Cavendish giving XMult, and Bull giving +Chips.
-		if context.joker_main then
-			-- Tells the joker what to do. In this case, it pulls the value of mult from the config, and tells the joker to use that variable as the "mult_mod".
+        if context.joker_main then
+
 			return {
 				mult_mod = card.ability.extra.mult,
-				-- This is a localize function. Localize looks through the localization files, and translates it. It ensures your mod is able to be translated. I've left it out in most cases for clarity reasons, but this one is required, because it has a variable.
-				-- This specifically looks in the localization table for the 'variable' category, specifically under 'v_dictionary' in 'localization/en-us.lua', and searches that table for 'a_mult', which is short for add mult.
-				-- In the localization file, a_mult = "+#1#". Like with loc_vars, the vars in this message variable replace the #1#.
+
 				message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
-				-- Without this, the mult will stil be added, but it'll just show as a blank red square that doesn't have any text.
+
 			}
 		end
 	end
@@ -248,6 +238,7 @@ SMODS.Joker {
     atlas = 'ModdedVanilla',
     pos = { x = 3, y = 0 },
     cost = 2,
+    blueprint_compat = false,
     calculate = function(self, card, context)
         if not context.joker_main then return end
         if card.area ~= G.jokers then return end
@@ -278,9 +269,140 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+
+	key = 'royalstrategy',
+
+	loc_txt = {
+		name = 'Royal Strategy',
+		text = {
+			"Every played {C:attention}King{}",
+            "gives X{C:red}#1#{} Mult"
+		}
+	},
+
+	config = { extra = { mult = 1.5 } },
+
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.mult } }
+	end,
+
+	rarity = 1,
+
+	atlas = 'ModdedVanilla',
+
+	pos = { x = 4, y = 0 },
+
+	cost = 2,
+    blueprint_compat = false,
+
+	calculate = function(self, card, context)
+        if context.joker_main and context.scoring_hand then
+            for _, played_card in ipairs(context.scoring_hand) do
+                if played_card:get_id() == 13 then
+                    return {
+                        Xmult_mod = card.ability.extra.mult,
+                        message = localize {
+                            type = 'variable',
+                            key = 'a_mult',
+                            vars = { card.ability.extra.mult }
+                        }
+                    }
+                end
+            end
+        end
+    end
+}
 
 
 
+SMODS.Joker {
+    key = "triple_sevens",
+    blueprint_compat = true,
+    rarity = 1,
+    cost = 4,
+    atlas = "ModdedVanilla",
+    pos = { x = 5, y = 0 },
+
+    config = { extra = { min = 1.5, max = 7 } },
+
+    loc_txt = {
+        name = "Triple Sevens",
+        text = { "" } -- required placeholder
+    },
+
+    loc_vars = function(self, info_queue, card)
+        -- values shown in DynamicText
+        local r_mults = {}
+        for i = math.floor(card.ability.extra.min), math.floor(card.ability.extra.max) do
+            r_mults[#r_mults + 1] = tostring(i)
+        end
+
+        local main_start = {
+            -- STATIC PREFIX
+            {
+                n = G.UIT.T,
+                config = {
+                    text = "When three 7s played, X",
+                    colour = G.C.MULT,
+                    scale = 0.32
+                }
+            },
+
+            -- DYNAMIC NUMBER
+            {
+                n = G.UIT.O,
+                config = {
+                    object = DynaText({
+                        string = r_mults,
+                        colours = { G.C.RED },
+                        random_element = true,
+                        silent = true,
+                        pop_in_rate = 9999999,
+                        min_cycle_time = 0,
+                        scale = 0.32
+                    })
+                }
+            },
+
+            -- STATIC SUFFIX
+            {
+                n = G.UIT.T,
+                config = {
+                    text = " Mult",
+                    colour = G.C.UI.TEXT_DARK,
+                    scale = 0.32
+                }
+            }
+        }
+
+        return { main_start = main_start }
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main and context.scoring_hand then
+            local sevens = 0
+
+            for _, c in ipairs(context.scoring_hand) do
+                if c:get_id() == 7 then
+                    sevens = sevens + 1
+                end
+            end
+
+            if sevens == 3 then
+                return {
+                    mult = pseudorandom_float(
+                        '7rands',
+                        card.ability.extra.min,
+                        card.ability.extra.max
+                    ),
+                    message = "777!",
+                    colour = G.C.MULT
+                }
+            end
+        end
+    end
+}
 
 
 
