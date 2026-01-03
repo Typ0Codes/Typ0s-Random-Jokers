@@ -253,9 +253,10 @@ SMODS.Joker {
         if not index then return end
 
         local left_joker = index > 1 and G.jokers.cards[index - 1] or nil
-        local left_key = left_joker and left_joker.original_key
+        local left_key = left_joker and (left_joker.base and (left_joker.base.original_key or left_joker.base.key)) or nil
+        print("Left joker key:", left_key)
 
-        if left_key == 'Typ0_cooljimbo' then
+        if left_key == 'j_Typ0_cooljimbo' then
             return {
                 Xmult_mod = 4,
                 message = localize { type = 'variable', key = 'a_xmult', vars = { 4 } }
@@ -267,6 +268,7 @@ SMODS.Joker {
             }
         end
     end
+
 }
 
 SMODS.Joker {
@@ -276,8 +278,9 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Royal Strategy',
 		text = {
-			"Every played {C:attention}King{}",
-            "gives X{C:red}#1#{} Mult"
+			"Joker gives",
+            "{C:red}X#1#{} Mult",
+            "for every played {C:attention}King{}"
 		}
 	},
 
@@ -287,7 +290,7 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.mult } }
 	end,
 
-	rarity = 1,
+	rarity = 3,
 
 	atlas = 'ModdedVanilla',
 
@@ -304,7 +307,7 @@ SMODS.Joker {
                         Xmult_mod = card.ability.extra.mult,
                         message = localize {
                             type = 'variable',
-                            key = 'a_mult',
+                            key = 'a_xmult',
                             vars = { card.ability.extra.mult }
                         }
                     }
@@ -319,7 +322,7 @@ SMODS.Joker {
 SMODS.Joker {
     key = "triple_sevens",
     blueprint_compat = true,
-    rarity = 1,
+    rarity = 3,
     cost = 4,
     atlas = "ModdedVanilla",
     pos = { x = 5, y = 0 },
@@ -344,7 +347,7 @@ SMODS.Joker {
                 n = G.UIT.T,
                 config = {
                     text = "When three 7s played, X",
-                    colour = G.C.MULT,
+                    colour = G.C.UI.TEXT_DARK,
                     scale = 0.32
                 }
             },
@@ -391,8 +394,8 @@ SMODS.Joker {
 
             if sevens == 3 then
                 return {
-                    mult = pseudorandom_float(
-                        '7rands',
+                    mult = pseudorandom(
+                        '7rands',  -- seed string
                         card.ability.extra.min,
                         card.ability.extra.max
                     ),
