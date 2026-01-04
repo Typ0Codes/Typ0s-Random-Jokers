@@ -16,9 +16,9 @@ Line 482, Castle 2 ------------ Shows the use of reset_game_globals and colour v
 --Creates an atlas for cards to use
 SMODS.Atlas {
 	-- Key for code to find it with
-	key = "ModdedVanilla",
+	key = "Typ0",
 	-- The name of the file, for the code to pull the atlas from
-	path = "ModdedVanilla.png",
+	path = "Typ0.png",
 	-- Width of each sprite in 1x size
 	px = 71,
 	-- Height of each sprite in 1x size
