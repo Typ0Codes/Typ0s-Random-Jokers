@@ -16,7 +16,7 @@ Line 482, Castle 2 ------------ Shows the use of reset_game_globals and colour v
 --Creates an atlas for cards to use
 SMODS.Atlas {
 	-- Key for code to find it with
-	key = "Typ0",
+	key = "Typ0Atlas",
 	-- The name of the file, for the code to pull the atlas from
 	path = "Typ0.png",
 	-- Width of each sprite in 1x size
@@ -41,7 +41,7 @@ SMODS.Joker{
     key = "black_spot",
     rarity = 3,
     cost = 8,
-    atlas = "ModdedVanilla",
+    atlas = "Typ0Atlas",
     blueprint_compat = false,
     pos = { x = 0, y = 0 },
 	loc_txt = {
@@ -88,7 +88,7 @@ SMODS.Joker {
     blueprint_compat = false,
     rarity = 2,
     cost = 5,
-	atlas = "ModdedVanilla",
+	atlas = "Typ0Atlas",
     pos = { x = 1, y = 0 },
     calculate = function(self, card, context)
         if context.mod_probability and not context.blueprint then
@@ -151,7 +151,7 @@ SMODS.Joker{
     key = "Boykisser",
     rarity = 4,
     cost = 20,
-    atlas = "ModdedVanilla",
+    atlas = "Typ0Atlas",
     pos = { x = 0, y = 1 },
 	soul_pos = { x = 4, y = 1 },
     blueprint_compat = false,
@@ -211,7 +211,7 @@ SMODS.Joker {
 
 	rarity = 1,
 
-	atlas = 'ModdedVanilla',
+	atlas = 'Typ0Atlas',
 
 	pos = { x = 2, y = 0 },
 
@@ -249,7 +249,7 @@ SMODS.Joker {
         return { vars = { card.ability.extra.mult } }
     end,
     rarity = 3,
-    atlas = 'ModdedVanilla',
+    atlas = 'Typ0Atlas',
     pos = { x = 3, y = 0 },
     cost = 2,
     blueprint_compat = false,
@@ -314,7 +314,7 @@ SMODS.Joker {
     blueprint_compat = true,
     rarity = 3,
     cost = 4,
-    atlas = "ModdedVanilla",
+    atlas = "Typ0Atlas",
     pos = { x = 5, y = 0 },
 
     config = { extra = { min = 1.5, max = 7 } },
@@ -420,7 +420,7 @@ SMODS.Joker {
 	rarity = 1,
 	rarity = 3,
 
-	atlas = 'ModdedVanilla',
+	atlas = 'Typ0Atlas',
 
 	pos = { x = 4, y = 0 },
 
@@ -464,7 +464,7 @@ SMODS.Joker {
     end,
 
     rarity = 1,
-    atlas = 'ModdedVanilla',
+    atlas = 'Typ0Atlas',
     pos = { x = 2, y = 0 },
     cost = 2,
     blueprint_compat = false,
@@ -495,7 +495,7 @@ SMODS.Joker {
     end,
 
     rarity = 1,
-    atlas = 'ModdedVanilla',
+    atlas = 'Typ0Atlas',
     pos = { x = 1, y = 1 },
     cost = 0,
     blueprint_compat = false,
