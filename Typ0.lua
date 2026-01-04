@@ -18,7 +18,7 @@ SMODS.Atlas {
 	-- Key for code to find it with
 	key = "Typ0Atlas",
 	-- The name of the file, for the code to pull the atlas from
-	path = "Typ0.png",
+	path = "Typ0Atlas.png",
 	-- Width of each sprite in 1x size
 	px = 71,
 	-- Height of each sprite in 1x size
@@ -446,37 +446,6 @@ SMODS.Joker {
     end
 }
 
-SMODS.Joker {
-
-    key = 'nothing',
-
-    loc_txt = {
-        name = '',
-        text = {
-            ""
-        }
-    },
-
-    config = { extra = { mult = 8 } },
-
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.mult } }
-    end,
-
-    rarity = 1,
-    atlas = 'Typ0Atlas',
-    pos = { x = 2, y = 0 },
-    cost = 2,
-    blueprint_compat = false,
-
-    calculate = function(self, card, context)
-        if context.joker_main then
-            return {
-                message = "",
-                colour = {0, 0, 0, 0}
-            }
-        end
-    end
 }SMODS.Joker {
 
     key = 'nuhuhjoker',
