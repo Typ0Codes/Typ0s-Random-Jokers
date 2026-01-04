@@ -103,32 +103,46 @@ SMODS.Joker {
     
 }
 
--- Red Seal
 SMODS.Seal {
-	name = "Kiss",
+    name = "Kiss",
     key = 'Kiss',
-	atlas = "KissedStamp",
+    atlas = "KissedStamp",
     pos = { x = 0, y = 0 },
-    config = { extra = { retriggers = 1 } },
+    config = { extra = { retriggers = 1, mult = 2 } },
     badge_colour = G.C.RED,
-	loc_txt = {
-		label = 'Kiss',
-        name = "Kiss",
 
+    loc_txt = {
+        label = 'Kiss',
+        name = "Kiss",
         text = {
             "Retrigger this card 1 time",
-			"(Litterally just red seal)"
+            "{C:mult}+2{} Mult"
         }
     },
+
     calculate = function(self, card, context)
+        -- Retrigger effect (like Red Seal)
         if context.repetition then
             return {
-                repetitions = card.ability.seal.extra.retriggers,
+                repetitions = card.ability.seal.extra.retriggers
+            }
+        end
+
+        -- Mult bonus when the card scores
+        if context.card_main then
+            return {
+                mult_mod = card.ability.seal.extra.mult,
+                message = localize {
+                    type = 'variable',
+                    key = 'a_mult',
+                    vars = { card.ability.seal.extra.mult }
+                }
             }
         end
     end,
+
     loc_vars = function(self, info_queue, card)
-        return { vars = { self.config.extra.retriggers } }
+        return { vars = { self.config.extra.retriggers, self.config.extra.mult } }
     end
 }
 
@@ -368,10 +382,11 @@ SMODS.Joker {
                 end
             end
 
-            if sevens == 3 then
+            -- ✅ at least three 7s
+            if sevens >= 3 then
                 return {
                     Xmult_mod = pseudorandom(
-                        '7rands',  -- seed string
+                        '7rands',
                         card.ability.extra.min,
                         card.ability.extra.max
                     ),
@@ -379,6 +394,118 @@ SMODS.Joker {
                     colour = G.C.MULT
                 }
             end
+        end
+    end
+}
+
+SMODS.Joker {
+
+	key = 'royalstrategy',
+
+	loc_txt = {
+		name = 'Royal Strategy',
+		text = {
+			"Joker gives",
+            "{C:red}X#1#{} Mult",
+            "for every played {C:attention}King{}"
+		}
+	},
+
+	config = { extra = { mult = 1.5 } },
+
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.mult } }
+	end,
+
+	rarity = 1,
+	rarity = 3,
+
+	atlas = 'ModdedVanilla',
+
+	pos = { x = 4, y = 0 },
+
+	cost = 2,
+    blueprint_compat = false,
+
+	calculate = function(self, card, context)
+        if context.joker_main and context.scoring_hand then
+            for _, played_card in ipairs(context.scoring_hand) do
+                if played_card:get_id() == 13 then
+                    return {
+                        Xmult_mod = card.ability.extra.mult,
+                        message = localize {
+                            type = 'variable',
+                            key = 'a_mult',
+                            key = 'a_xmult',
+                            vars = { card.ability.extra.mult }
+                        }
+                    }
+                end
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+
+    key = 'nothing',
+
+    loc_txt = {
+        name = '',
+        text = {
+            ""
+        }
+    },
+
+    config = { extra = { mult = 8 } },
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult } }
+    end,
+
+    rarity = 1,
+    atlas = 'ModdedVanilla',
+    pos = { x = 2, y = 0 },
+    cost = 2,
+    blueprint_compat = false,
+
+    calculate = function(self, card, context)
+        if context.joker_main then
+            return {
+                message = "",
+                colour = {0, 0, 0, 0}
+            }
+        end
+    end
+}SMODS.Joker {
+
+    key = 'nuhuhjoker',
+
+    loc_txt = {
+        name = '',
+        text = {
+            ""
+        }
+    },
+
+    config = { extra = { mult = 8 } },
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult } }
+    end,
+
+    rarity = 1,
+    atlas = 'ModdedVanilla',
+    pos = { x = 1, y = 1 },
+    cost = 0,
+    blueprint_compat = false,
+
+    calculate = function(self, card, context)
+        if context.joker_main then
+            return {
+                message = "",
+                colour = {0, 0, 0, 0}
+            }
         end
     end
 }

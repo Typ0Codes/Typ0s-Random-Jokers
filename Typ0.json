@@ -4,7 +4,7 @@
     "author": ["SLDTyp0"],
     "description": "Adds some jokers to the game",
     "prefix": "Typ0",
-    "main_file": "ModdedVanilla.lua",
+    "main_file": "Typ0.lua",
     "badge_colour": "c7638f",
     "dependencies": [
         "Steamodded (>=1.0.0~ALPHA-1225a)"
