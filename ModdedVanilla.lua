@@ -219,7 +219,7 @@ SMODS.Joker {
 
 
 
-   SMODS.Joker {
+SMODS.Joker {
     key = 'coolerjimbo',
     loc_txt = {
         name = 'Cooler Jimbo',
@@ -239,83 +239,59 @@ SMODS.Joker {
     pos = { x = 3, y = 0 },
     cost = 2,
     blueprint_compat = false,
+
     calculate = function(self, card, context)
         if not context.joker_main then return end
         if card.area ~= G.jokers then return end
 
         local index
-        for i = 1, #G.jokers.cards do
-            if G.jokers.cards[i] == card then
+        for i, c in ipairs(G.jokers.cards) do
+            if c == card then
                 index = i
                 break
             end
         end
-        if not index then return end
+        if not index or index == 1 then
 
-        local left_joker = index > 1 and G.jokers.cards[index - 1] or nil
-        local left_key = left_joker and (left_joker.base and (left_joker.base.original_key or left_joker.base.key)) or nil
+            return {
+                mult_mod = card.ability.extra.mult,
+                message = localize {
+                    type = 'variable',
+                    key = 'a_mult',
+                    vars = { card.ability.extra.mult }
+                }
+            }
+        end
+
+
+        local left_key = G.jokers.cards[index - 1].config.center.key
+
         print("Left joker key:", left_key)
 
         if left_key == 'j_Typ0_cooljimbo' then
             return {
                 Xmult_mod = 4,
-                message = localize { type = 'variable', key = 'a_xmult', vars = { 4 } }
+                message = localize {
+                    type = 'variable',
+                    key = 'a_xmult',
+                    vars = { 4 }
+                }
             }
         else
             return {
                 mult_mod = card.ability.extra.mult,
-                message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+                message = localize {
+                    type = 'variable',
+                    key = 'a_mult',
+                    vars = { card.ability.extra.mult }
+                }
             }
         end
     end
-
 }
 
-SMODS.Joker {
 
-	key = 'royalstrategy',
 
-	loc_txt = {
-		name = 'Royal Strategy',
-		text = {
-			"Joker gives",
-            "{C:red}X#1#{} Mult",
-            "for every played {C:attention}King{}"
-		}
-	},
-
-	config = { extra = { mult = 1.5 } },
-
-	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.mult } }
-	end,
-
-	rarity = 3,
-
-	atlas = 'ModdedVanilla',
-
-	pos = { x = 4, y = 0 },
-
-	cost = 2,
-    blueprint_compat = false,
-
-	calculate = function(self, card, context)
-        if context.joker_main and context.scoring_hand then
-            for _, played_card in ipairs(context.scoring_hand) do
-                if played_card:get_id() == 13 then
-                    return {
-                        Xmult_mod = card.ability.extra.mult,
-                        message = localize {
-                            type = 'variable',
-                            key = 'a_xmult',
-                            vars = { card.ability.extra.mult }
-                        }
-                    }
-                end
-            end
-        end
-    end
-}
 
 
 
@@ -331,18 +307,18 @@ SMODS.Joker {
 
     loc_txt = {
         name = "Triple Sevens",
-        text = { "" } -- required placeholder
+        text = { "" }
     },
 
     loc_vars = function(self, info_queue, card)
-        -- values shown in DynamicText
+
         local r_mults = {}
         for i = math.floor(card.ability.extra.min), math.floor(card.ability.extra.max) do
             r_mults[#r_mults + 1] = tostring(i)
         end
 
         local main_start = {
-            -- STATIC PREFIX
+
             {
                 n = G.UIT.T,
                 config = {
@@ -352,7 +328,6 @@ SMODS.Joker {
                 }
             },
 
-            -- DYNAMIC NUMBER
             {
                 n = G.UIT.O,
                 config = {
@@ -362,13 +337,14 @@ SMODS.Joker {
                         random_element = true,
                         silent = true,
                         pop_in_rate = 9999999,
+                        pop_delay = 0.2011,
                         min_cycle_time = 0,
                         scale = 0.32
                     })
                 }
             },
 
-            -- STATIC SUFFIX
+
             {
                 n = G.UIT.T,
                 config = {
@@ -394,7 +370,7 @@ SMODS.Joker {
 
             if sevens == 3 then
                 return {
-                    mult = pseudorandom(
+                    Xmult_mod = pseudorandom(
                         '7rands',  -- seed string
                         card.ability.extra.min,
                         card.ability.extra.max
