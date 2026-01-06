@@ -17,4 +17,5 @@ Added
 ### 1.2
 Added
 - SIS Ship: +1 mult each round with a cap of 30
+
 reworked   
