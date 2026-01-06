@@ -399,69 +399,54 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+    key = 'royalstrategy',
 
-	key = 'royalstrategy',
+    loc_txt = {
+        name = 'Royal Strategy',
+        text = {
+            "Each scored {C:attention}King{}",
+            "gives {C:red}X#1#{} Mult"
+        }
+    },
 
-	loc_txt = {
-		name = 'Royal Strategy',
-		text = {
-			"Joker gives",
-            "{C:red}X#1#{} Mult",
-            "for every played {C:attention}King{}"
-		}
-	},
+    config = { extra = { mult = 1.5 } },
 
-	config = { extra = { mult = 1.5 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult } }
+    end,
 
-	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.mult } }
-	end,
-
-	rarity = 1,
-	rarity = 3,
-
-	atlas = 'Typ0Atlas',
-
-	pos = { x = 4, y = 0 },
-
-	cost = 2,
+    rarity = 3,
+    atlas = 'Typ0Atlas',
+    pos = { x = 4, y = 0 },
+    cost = 5,
     blueprint_compat = false,
 
-	calculate = function(self, card, context)
-        if context.joker_main and context.scoring_hand then
-            for _, played_card in ipairs(context.scoring_hand) do
-                if played_card:get_id() == 13 then
-                    return {
-                        Xmult_mod = card.ability.extra.mult,
-                        message = localize {
-                            type = 'variable',
-                            key = 'a_mult',
-                            key = 'a_xmult',
-                            vars = { card.ability.extra.mult }
-                        }
+    calculate = function(self, card, context)
+        -- EXACT same trigger as Walkie Talkie
+        if context.individual and context.cardarea == G.play then
+            if context.other_card:get_id() == 13 then -- King
+                return {
+                    Xmult_mod = card.ability.extra.mult,
+                    card = context.other_card,
+                    message = localize {
+                        type = 'variable',
+                        key = 'a_xmult',
+                        vars = { card.ability.extra.mult }
                     }
-                end
+                }
             end
         end
     end
 }
 
-}SMODS.Joker {
 
+SMODS.Joker {
     key = 'nuhuhjoker',
 
     loc_txt = {
         name = '',
-        text = {
-            ""
-        }
+        text = {}
     },
-
-    config = { extra = { mult = 8 } },
-
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.mult } }
-    end,
 
     rarity = 1,
     atlas = 'Typ0Atlas',
@@ -471,13 +456,74 @@ SMODS.Joker {
 
     calculate = function(self, card, context)
         if context.joker_main then
+            -- SAFETY CHECK (recommended)
+            if not card.config or not card.config.center then return end
+
+            local stake = get_joker_win_sticker(card.config.center, true)
+            local stakemult = (stake * 0.5)
+            
+            if stake > 0 then
+                return {
+                    Xmult_mod = stakemult,
+                    message = " ",
+                    colour = {0, 0, 0, 0}
+                }
+            else
+                return {
+                    message = " ",
+                    colour = {0, 0, 0, 0}
+                }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "SISShip",
+    loc_txt = {
+        name = "SIS Ship",
+                text = {
+                    "{C:mult}+#1#{} Mult",
+                    "{C:mult}+#2#{} Mult per",
+                    "round played,",
+                    "with a max of 30"
+                },
+    },
+    blueprint_compat = true,
+    eternal_compat = false,
+    rarity = 3,
+    cost = 5,
+    atlas = 'Typ0Atlas',
+    pos = { x = 2, y = 1 },
+    config = { extra = { mult_loss = 1, mult = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult, card.ability.extra.mult_loss } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+            if card.ability.extra.mult + card.ability.extra.mult_loss >= 30 then
+                SMODS.destroy_cards(card, nil, nil, true)
+                return {
+                    message = localize('Crashed!'),
+                    colour = G.C.RED
+                }
+            else
+                -- See note about SMODS Scaling Manipulation on the wiki
+                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_loss
+                return {
+                    message = localize { type = 'variable', key = 'a_mult_minus', vars = { card.ability.extra.mult_loss } },
+                    colour = G.C.MULT
+                }
+            end
+        end
+        if context.joker_main then
             return {
-                message = "",
-                colour = {0, 0, 0, 0}
+                mult = card.ability.extra.mult
             }
         end
     end
 }
+
 
 
 
