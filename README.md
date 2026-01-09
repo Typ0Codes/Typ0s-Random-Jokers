@@ -19,3 +19,9 @@ Added
 - SIS Ship: +1 mult each round with a cap of 30
 
 reworked   
+
+### 1.3
+Added
+-Gelatinous Cube: X1.5 mult for each card below your full deck
+
+reworked SIS Ship: removed cap per suggestion from tigerthawk

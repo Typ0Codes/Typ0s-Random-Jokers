@@ -36,6 +36,8 @@ SMODS.Atlas {
 	py = 95
 }
 
+SMODS.Sound({key = "feces", path = "feces.wav",})
+
 
 SMODS.Joker{
     key = "black_spot",
@@ -486,7 +488,6 @@ SMODS.Joker {
                     "{C:mult}+#1#{} Mult",
                     "{C:mult}+#2#{} Mult per",
                     "round played,",
-                    "with a max of 30"
                 },
     },
     blueprint_compat = true,
@@ -501,25 +502,55 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
-            if card.ability.extra.mult + card.ability.extra.mult_loss >= 30 then
-                SMODS.destroy_cards(card, nil, nil, true)
-                return {
-                    message = localize('Crashed!'),
-                    colour = G.C.RED
-                }
-            else
+           
                 -- See note about SMODS Scaling Manipulation on the wiki
                 card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_loss
                 return {
                     message = localize { type = 'variable', key = 'a_mult_minus', vars = { card.ability.extra.mult_loss } },
                     colour = G.C.MULT
                 }
-            end
+           
         end
         if context.joker_main then
             return {
                 mult = card.ability.extra.mult
             }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "gelatinous_cube",
+    loc_txt = {
+        name = "Gelatinous Cube",
+                text = {
+                    "{C:chips}X#1#{} Chips for each card",
+                    "below {C:attention}#3#{} in your full deck",
+                    "{C:inactive}(Currently {C:chips}X#2#{C:inactive} Chips)",
+                },
+    },
+    blueprint_compat = true,
+    rarity = 3,
+    cost = 6,
+    atlas = "Typ0Atlas",
+    pos = { x = 3, y = 1 },
+	soul_pos = { x = 5, y = 1 },
+    config = { extra = { mult = 1.5 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult, math.max(0, card.ability.extra.mult * (G.playing_cards and (G.GAME.starting_deck_size - #G.playing_cards) or 0)), G.GAME.starting_deck_size } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            
+            --play_sound('Typ0_feces', 1, 100) --id like to get this to play only when chips are actually given but xchips makes a message that sound doesnt support so id have to have a second message which i dont want
+            return {
+                
+                xchips = math.max(0, card.ability.extra.mult * (G.GAME.starting_deck_size - #G.playing_cards)),
+                message = "Oozed!",
+                colour = G.C.GREEN,
+                sound = 'Typ0_feces',
+            }
+            
         end
     end
 }
