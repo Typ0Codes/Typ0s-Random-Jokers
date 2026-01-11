@@ -13,6 +13,13 @@ Line 418, Cavendish 2 --------- Shows yes_pool_flag, has X Mult, mainly to go wi
 Line 482, Castle 2 ------------ Shows the use of reset_game_globals and colour variables in loc_vars, as well as what a hook is and how to use it.
 --]]
 
+SMODS.Atlas({
+	key = "modicon",
+	path = "modicon.png",
+	px = 32,
+	py = 32
+})
+
 --Creates an atlas for cards to use
 SMODS.Atlas {
 	-- Key for code to find it with
@@ -150,14 +157,13 @@ SMODS.Seal {
     },
 
     calculate = function(self, card, context)
-        -- Retrigger effect (like Red Seal)
+
         if context.repetition then
             return {
                 repetitions = card.ability.seal.extra.retriggers
             }
         end
 
-        -- Mult bonus when the card scores
         if context.card_main then
             return {
                 mult_mod = card.ability.seal.extra.mult,
@@ -414,7 +420,7 @@ SMODS.Joker {
                 end
             end
 
-            -- ✅ at least three 7s
+
             if sevens >= 3 then
                 return {
                     Xmult_mod = pseudorandom(
@@ -455,9 +461,9 @@ SMODS.Joker {
     pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
-        -- EXACT same trigger as Walkie Talkie
+      
         if context.individual and context.cardarea == G.play then
-            if context.other_card:get_id() == 13 then -- King
+            if context.other_card:get_id() == 13 then 
                 return {
                     Xmult_mod = card.ability.extra.mult,
                     card = context.other_card,
@@ -927,6 +933,43 @@ SMODS.Booster {
         
         return { set = "Typ0Addition", area = G.pack_cards, skip_materialize = true, soulable = true}
     end,
+}
+
+-- Standard Tag
+SMODS.Tag {
+    key = "Typ0Standard",
+    min_ante = 2,
+     loc_txt= {
+        name = 'Typ0 Tag',
+        text = { "Immediately grants you a",
+                "{C:attention}Mega Typ0 Pack{}", }},
+    atlas = "modicon",
+    
+    pos = { x = 0, y = 0 },
+    loc_vars = function(self, info_queue, tag)
+        info_queue[#info_queue + 1] = G.P_CENTERS.p_Typ0_Typ0Pack3
+    end,
+     apply = function(self, tag, context)
+        if context.type == 'new_blind_choice' then
+            local lock = tag.ID
+            G.CONTROLLER.locks[lock] = true
+            tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
+                local booster = SMODS.create_card { key = 'p_Typ0_Typ0Pack3', area = G.play }
+                booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
+                booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
+                booster.T.w = G.CARD_W * 1.27
+                booster.T.h = G.CARD_H * 1.27
+                booster.cost = 0
+                booster.from_tag = true
+                G.FUNCS.use_card({ config = { ref_table = booster } })
+                booster:start_materialize()
+                G.CONTROLLER.locks[lock] = nil
+                return true
+            end)
+            tag.triggered = true
+            return true
+        end
+    end
 }
 
 
