@@ -36,9 +36,32 @@ SMODS.Atlas {
 	py = 95
 }
 
+SMODS.Atlas {
+	-- Key for code to find it with
+	key = "Typ0Boosters",
+	-- The name of the file, for the code to pull the atlas from
+	path = "Typ0Boosters.png",
+	-- Width of each sprite in 1x size
+	px = 71,
+	-- Height of each sprite in 1x size
+	py = 95
+}
+
 SMODS.Sound({key = "feces", path = "feces.wav",})
 
 SMODS.Sound({key = "Typ0Talk", path = "Typ0Talk.wav",})
+
+-- Yahimod joker pool
+SMODS.ObjectType({
+	key = "Typ0Addition",
+	default = "j_Typ0Joker",
+	cards = {},
+	inject = function(self)
+		SMODS.ObjectType.inject(self)
+		-- insert base game food jokers
+	end,
+})
+
 
 
 SMODS.Joker{
@@ -47,6 +70,7 @@ SMODS.Joker{
     cost = 8,
     atlas = "Typ0Atlas",
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
     pos = { x = 0, y = 0 },
 	loc_txt = {
         name = "Black Spot",
@@ -90,6 +114,7 @@ SMODS.Joker {
         }
     },
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
     rarity = 2,
     cost = 5,
 	atlas = "Typ0Atlas",
@@ -159,6 +184,7 @@ SMODS.Joker{
     pos = { x = 0, y = 1 },
 	soul_pos = { x = 4, y = 1 },
     blueprint_compat = false,
+    --this is left out of the typ0 pool due to beind legendary
     loc_txt = {
         name = "Boykisser",
         text = {
@@ -221,6 +247,7 @@ SMODS.Joker {
 
 	cost = 2,
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
 
 	calculate = function(self, card, context)
         if context.joker_main then
@@ -257,6 +284,7 @@ SMODS.Joker {
     pos = { x = 3, y = 0 },
     cost = 2,
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
         if not context.joker_main then return end
@@ -424,6 +452,7 @@ SMODS.Joker {
     pos = { x = 4, y = 0 },
     cost = 5,
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
         -- EXACT same trigger as Walkie Talkie
@@ -457,6 +486,7 @@ SMODS.Joker {
     pos = { x = 1, y = 1 },
     cost = 0,
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
         if context.joker_main then
@@ -667,6 +697,7 @@ SMODS.Joker {
 
 	cost = 2,
     blueprint_compat = false,
+    pools = {["Typ0Addition"] = true},
 
 	calculate = function(self, card, context)
         if context.joker_main then
@@ -773,8 +804,12 @@ SMODS.Joker {
                 "im straight i promise",
                 "freinds", --juniper
                 "i Typ0 am going to open the end", -- dallin
-                "my amazing husband caleb"
+                "my amazing husband caleb",
+                ":3",
+                "OwO"
             }
+
+            
 
             local randomIndex = math.random(#Typ0_Messages) 
             local selectedMessage = Typ0_Messages[randomIndex]
@@ -801,6 +836,98 @@ SMODS.Joker {
 	end
 }
 
+-- Buffoon Packs
+SMODS.Booster {
+    key = "Typ0Pack1",
+    loc_txt= {
+        name = 'Typ0 Booster Pack',
+        text = { "Pick {C:attention}#1#{} card out",
+                "{C:attention}#2#{} of Typ0's jokers!", },
+        group_name = {"Pick a card,"},
+    },
+    weight = 0.6,
+    kind = 'Typ0Pack', -- You can also use Buffoon if you want it to belong to the vanilla kind
+    cost = 4,
+    atlas = "Typ0Boosters",
+    pos = { x = 0, y = 0 },
+    config = { extra = 3, choose = 1 },
+    
+    loc_vars = function(self, info_queue, card)
+        local cfg = (card and card.ability) or self.config
+        return {
+            vars = { cfg.choose, cfg.extra },
+           
+        }
+    end,
+
+    ease_background_colour = function(self) ease_background_colour{new_colour = HEX('C2F4A4'), special_colour = HEX('A4C2F4'), contrast = 5} end,
+    create_card = function(self, card, i)
+        
+        return { set = "Typ0Addition", area = G.pack_cards, skip_materialize = true, soulable = true}
+    end,
+}
+
+SMODS.Booster {
+    key = "Typ0Pack2",
+    loc_txt= {
+        name = 'Jumbo Typ0 Booster Pack',
+        text = { "Pick {C:attention}#1#{} card out",
+                "{C:attention}#2#{} of Typ0's jokers!", },
+        group_name = {"Any Card,"},
+    },
+    weight = 0.6,
+    kind = 'Typ0Pack', -- You can also use Buffoon if you want it to belong to the vanilla kind
+    cost = 6,
+    atlas = "Typ0Boosters",
+    pos = { x = 1, y = 0 },
+    config = { extra = 4, choose = 1 },
+    
+    loc_vars = function(self, info_queue, card)
+        local cfg = (card and card.ability) or self.config
+        return {
+            vars = { cfg.choose, cfg.extra },
+           
+        }
+    end,
+    
+    ease_background_colour = function(self) ease_background_colour{new_colour = HEX('C2F4A4'), special_colour = HEX('A4C2F4'), contrast = 5} end,
+
+    create_card = function(self, card, i)
+        
+        return { set = "Typ0Addition", area = G.pack_cards, skip_materialize = true, soulable = true}
+    end,
+}
+
+SMODS.Booster {
+    key = "Typ0Pack3",
+    loc_txt= {
+        name = 'Mega Typ0 Booster Pack',
+        text = { "Pick {C:attention}#1#{} card out",
+                "{C:attention}#2#{} of Typ0's jokers!", },
+        group_name = {"Oh also buy Shipped In Space"},
+    },
+    weight = 0.15,
+    kind = 'Typ0Pack', -- You can also use Buffoon if you want it to belong to the vanilla kind
+    cost = 8,
+    atlas = "Typ0Boosters",
+    pos = { x = 2, y = 0 },
+    config = { extra = 6, choose = 2 },
+    
+    loc_vars = function(self, info_queue, card)
+        local cfg = (card and card.ability) or self.config
+        return {
+            vars = { cfg.choose, cfg.extra },
+           
+        }
+    end,
+
+    ease_background_colour = function(self) ease_background_colour{G.C.DARK_EDITION,G.C.UI.TEXT_INACTIVE, contrast = 5} end,
+    
+    create_card = function(self, card, i)
+        
+        return { set = "Typ0Addition", area = G.pack_cards, skip_materialize = true, soulable = true}
+    end,
+}
 
 
 

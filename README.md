@@ -33,3 +33,10 @@ Added
 
 Disclamers
 i am not racist or gay or homophobic or MAGA or anything said by this joker in this mod. the joker does not hold my values. its a bit. ok cool have fun
+
+## 1.5
+Added
+-Booster Packs: Typ0 Pack, Jumbo Typ0 Pack, Mega Typ0 Pack
+
+Notes
+I meant to go to bed but i was thinking about how nice it is in yahimod that theres packs specfically for the jokers from that mod that make it easier to get jokers from the mod your playing so i added it myself so thats how you got two updates in one night lmao
