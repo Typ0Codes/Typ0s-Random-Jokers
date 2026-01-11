@@ -38,6 +38,8 @@ SMODS.Atlas {
 
 SMODS.Sound({key = "feces", path = "feces.wav",})
 
+SMODS.Sound({key = "Typ0Talk", path = "Typ0Talk.wav",})
+
 
 SMODS.Joker{
     key = "black_spot",
@@ -458,7 +460,7 @@ SMODS.Joker {
 
     calculate = function(self, card, context)
         if context.joker_main then
-            -- SAFETY CHECK (recommended)
+            
             if not card.config or not card.config.center then return end
 
             local stake = get_joker_win_sticker(card.config.center, true)
@@ -503,7 +505,7 @@ SMODS.Joker {
     calculate = function(self, card, context)
         if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
            
-                -- See note about SMODS Scaling Manipulation on the wiki
+                
                 card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_loss
                 return {
                     message = localize { type = 'variable', key = 'a_mult_minus', vars = { card.ability.extra.mult_loss } },
@@ -555,7 +557,249 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker({
+    key = "PolychromeToTheRight",
+    loc_txt = {
+        name = "Polychrome to the Right",
+        text = {
+            "Hey grayson is the polychrome to the right",
+        }
+    },
 
+    atlas = "Typ0Atlas",
+    pos = { x = 0, y = 2 },
+
+    rarity = 2,
+    cost = 6,
+
+    config = {
+        extra = {
+            x_mult = 1.5
+        }
+    },
+
+
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local jokers = G.jokers and G.jokers.cards
+            if jokers and jokers[#jokers] == card then
+               
+                return {
+                    Xmult = 1.5
+                }
+            end
+        end
+    end,
+
+    add_to_deck = function(self, card, from_debuff)
+        if not card.edition or card.edition.type ~= 'polychrome' then
+            card:set_edition({ type = 'polychrome' }, true)
+        end
+    end,
+
+
+    set_edition = function(self, card, edition)
+
+        return { type = 'polychrome' }
+    end
+})
+
+SMODS.Shader{
+    key = "positive",
+    path = "positive.fs"
+}
+
+
+
+SMODS.Edition {
+    key = 'positive',
+
+
+	order = 2,
+    loc_txt = {
+        name = "Positive",
+        label = "Positive",
+        text = {
+            "tols rekoJ {C:dark_edition}+1{}",
+        }
+    },
+    shader = 'positive',
+    
+    config = { card_limit = -1 },
+    in_shop = true,
+    weight = 3,
+    extra_cost = 5,
+    sound = { sound = "polychrome", per = 1.5, vol = 0.4 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.edition.card_limit } }
+    end,
+    get_weight = function(self)
+        return self.weight
+    end,
+}
+
+SMODS.Joker {
+
+	key = 'Typ0Joker',
+
+	loc_txt = {
+		name = 'Typ0',
+		text = {
+			"Fails"
+		}
+	},
+
+	config = { extra = { mult = 8 } },
+
+	loc_vars = function(self, info_queue, card)
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, 10000, 'typ0fail')
+
+        return {
+            vars = { numerator, denominator }
+        }
+    end,
+
+	rarity = 1,
+
+	atlas = 'Typ0Atlas',
+
+	pos = { x = 1, y = 2 },
+
+	cost = 2,
+    blueprint_compat = false,
+
+	calculate = function(self, card, context)
+        if context.joker_main then
+
+            local Typ0_Messages = {
+                "Oh sugars!",
+                "Holy Hannah!",
+                "What in the sausage and egg mcmuffin!",
+                "Subscribe to my youtube channel",
+                "BUY SHIPPED IN SPACE",
+                "IM TYP0 FRICK YOU",
+                "I love torturing myself",
+                "I eat rocks for breakfast",
+                "Nayndabcat",
+                "Carter sucks",
+                "Uhhhhh",
+                "UwU",
+                "Thats Sexist",
+                "Cheesebuckets",
+                "Im Typ0 and i like saying slurs",
+                "the slurs one isnt true btw",
+                "i dont say slurs",
+                "we where playing among us",
+                "and my friend was impersonating me",
+                "and he said",
+                "Im homophobic",
+                "i m gay",
+                "i love men",
+                "im straight",
+                "you could be my green man",
+                "i always do women",
+                "to be clear these are things from my quotes channel",
+                "in me and my friends discord",
+                "that i have said",
+                "but are taken out of context",
+                "for comedic effect",
+                "i love impregnating my pottery",
+                "vro",
+                "gosh i love jacob geller i want to make out with him",
+                "i remember your kisses caleb",
+                "you want me to kiss you caleb because i will",
+                "i will kiss you hard",
+                "i am actually straight btw",
+                "how tf do i code malware for silly",
+                "Sesbian Lex",
+                "sure buddy",
+                "skill issue",
+                "i suck",
+                "hey hottie",
+                "*makes you feel gender dysphoria*",
+                "i did divorce him a day later",
+                "well i read the whole quotes channel",
+                "so",
+                "i think thats probably enough for now",
+                "oh yeah some of these are split up over multiple messages",
+                "uh",
+                "im tired",
+                "i need to sleep",
+                "i should go to bed",
+                "sorry im late",
+                "i got distracted",
+                "i got on a side quest",
+                "i got lost in the sauce",
+                "i got lost in the thick sauce",
+                "thicc sauce is better",
+                "dawg VScode autocomplete is wild",
+                "ju",
+                "orange juice",
+                "id smash a dude",
+                "Today is December 29th, 2025. This is Typ0, your host for today, bringing you your daily Silksong - Sea of Sorrow news. There has been no news to report for Sea of Sorrow today. This has been your daily news for Sea of Sorrow for today, December 29th, 2025.",
+                "i love playing plants vs baddies", --grayson
+                "lemon", 
+                "ok thats enough",
+                "ling gang guli guli gu ling guta ling gang gu ling gang gu",
+                "You should play rainworld", -- carter
+                "you should shoot grayson", -- carter
+                "gay son",
+                "Dont worry, im here for your children", -- dulci 
+                "im so stupid",
+                "i better not get cancelled for this",
+                "i only pretend to be gay", -- dulci 
+                "tradition is just peer pressure from dead people", -- dulci 
+                "i",
+                "am now",
+                "applesauce",
+                "you plonker",
+                "i thought you had a shirt",
+                "and then theres just the reverse time button",
+                "fear kills more dreams than failure ever will", -- dulci
+                "i cant do a pushup", -- will
+                "Sometimes when you're in a dark place you tend to think you have been buried; what if you've just been planted", -- dulci 
+                "Stop doubting yourself. You've already survived things you once thought would break you.", -- dulci 
+                "im endorsed by donald trump", --tristram put this one in
+                "i love femboys", --tristram put this one in
+                "Breed me", --matt put this one in
+                "im just a widdle man", --isaac
+                "goodnight sweet heart", 
+                "You could be dead tomorrow so you might as well live while you have the chance",
+                "I'm gay", -- ju
+                "i love watching stranger things every night with my amazing sister gwen", --my sister
+                "im an avid anime weeb",-- caleb
+                "this next one is false 100%",
+                "im 100% verifiably gay and anything a day henceforth will do nothing to negate or nulify this statement", --caleb
+                "im straight i promise",
+                "freinds", --juniper
+                "i Typ0 am going to open the end", -- dallin
+                "my amazing husband caleb"
+            }
+
+            local randomIndex = math.random(#Typ0_Messages) 
+            local selectedMessage = Typ0_Messages[randomIndex]
+
+            if SMODS.pseudorandom_probability(card, "typ0fail", 1, 10000) then
+                return {
+                    Xmult = 1000000000000000,
+                    xchips = 100000000000000,
+                    message = selectedMessage,
+                    sound = "Typ0_Typ0Talk", --i wish i could make this smarter somehow
+                    colour = {0, 0, 1, 1}
+                }
+            else
+                return {
+                    Xmult = -1000000000000,
+                    xchips = 0.1,
+                    message = selectedMessage,
+                    sound = "Typ0_Typ0Talk",
+                    colour = {0, 0, 1, 1}
+
+                }
+            end
+		end
+	end
+}
 
 
 

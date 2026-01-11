@@ -25,3 +25,11 @@ Added
 -Gelatinous Cube: X1.5 mult for each card below your full deck
 
 reworked SIS Ship: removed cap per suggestion from tigerthawk
+
+## 1.4
+Added
+-Polychrome to the right: always polychrome. if its all the way to the right extra 1.5 mult
+-Typ0: 1 in 10000 chance to get a ton of mult and chips. every other time you get a ton of negative mult lmao. has a ton of lines suggested by freinds or said by me deeply out of context
+
+Disclamers
+i am not racist or gay or homophobic or MAGA or anything said by this joker in this mod. the joker does not hold my values. its a bit. ok cool have fun
