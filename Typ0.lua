@@ -620,7 +620,7 @@ SMODS.Edition {
         name = "Positive",
         label = "Positive",
         text = {
-            "tols rekoJ {C:dark_edition}+1{}",
+            "tols rekoJ {C:dark_edition}-1{}",
         }
     },
     shader = 'positive',
