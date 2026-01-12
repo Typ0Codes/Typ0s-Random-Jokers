@@ -529,6 +529,7 @@ SMODS.Joker {
                 },
     },
     blueprint_compat = true,
+    pools = {["Typ0Addition"] = true},
     eternal_compat = false,
     rarity = 3,
     cost = 5,
@@ -568,6 +569,7 @@ SMODS.Joker {
                 },
     },
     blueprint_compat = true,
+    pools = {["Typ0Addition"] = true},
     rarity = 3,
     cost = 6,
     atlas = "Typ0Atlas",
@@ -604,7 +606,7 @@ SMODS.Joker({
 
     atlas = "Typ0Atlas",
     pos = { x = 0, y = 2 },
-
+    pools = {["Typ0Addition"] = true},
     rarity = 2,
     cost = 6,
 
@@ -703,7 +705,7 @@ SMODS.Joker {
 
 	cost = 2,
     blueprint_compat = false,
-    pools = {["Typ0Addition"] = true},
+    --pools = {["Typ0Addition"] = true}, taken out for just being trash
 
 	calculate = function(self, card, context)
         if context.joker_main then
