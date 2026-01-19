@@ -40,3 +40,14 @@ Added
 
 Notes
 I meant to go to bed but i was thinking about how nice it is in yahimod that theres packs specfically for the jokers from that mod that make it easier to get jokers from the mod your playing so i added it myself so thats how you got two updates in one night lmao
+
+## 1.6
+
+Added
+-Custom Booster Pack Music
+
+Reworked
+-SIS Ship
+-A few other things i forgor
+
+fixed bugs

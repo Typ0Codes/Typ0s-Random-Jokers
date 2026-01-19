@@ -54,9 +54,89 @@ SMODS.Atlas {
 	py = 95
 }
 
-SMODS.Sound({key = "feces", path = "feces.wav",})
+
+SMODS.Sound({key = "feces", path = "feces.wav", sync = true,})
 
 SMODS.Sound({key = "Typ0Talk", path = "Typ0Talk.wav",})
+
+
+TYP0_CONFIG = SMODS.current_mod.config
+
+if TYP0_CONFIG.typ0_pack_music == nil then
+    TYP0_CONFIG.typ0_pack_music = true
+end
+
+SMODS.current_mod.config_tab = function()
+    return {
+        n = G.UIT.ROOT,
+        config = { align = "cm", padding = 0.05, emboss = 0.05, r = 0.1, colour = G.C.BLACK },
+        nodes = {
+            {
+                n = G.UIT.R,
+                config = { align = "cm", minh = 1 },
+                nodes = {
+                    {
+                        n = G.UIT.T,
+                        config = { text = "Typ0'S Random Jokers", colour = G.C.RED, scale = 0.5 }
+                    }
+                }
+            },
+            {
+                n = G.UIT.R,
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        nodes = {
+                            create_toggle {
+                                label = "Enable Pack Music",
+                                ref_table = TYP0_CONFIG,
+                                ref_value = "typ0_pack_music"
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }
+end
+
+SMODS.Sound({
+    key = "music_typ0_me",
+    path = "music_me.wav",
+    pitch = 1,
+    volume = 0.6,
+    sync = true,
+    select_music_track = function()
+        
+        
+        
+
+        
+        if not TYP0_CONFIG.typ0_pack_music then
+
+            return false
+        end
+
+        
+        if G.STATE == G.STATES.SMODS_BOOSTER_OPENED then
+            local card = G.pack_cards and G.pack_cards.cards and G.pack_cards.cards[1]
+            local card_mod_id = card
+                and card.config
+                and card.config.center
+                and card.config.center.mod
+                and card.config.center.mod.id
+
+            if card_mod_id == "Typ0" then
+
+                return true 
+                
+            end
+        end
+
+        return false  
+        
+    end,
+})
 
 -- Yahimod joker pool
 SMODS.ObjectType({
@@ -521,11 +601,13 @@ SMODS.Joker {
 SMODS.Joker {
     key = "SISShip",
     loc_txt = {
-        name = "SIS Ship",
+        name = "S.I.S. Ship",
                 text = {
-                    "{C:mult}+#1#{} Mult",
-                    "{C:mult}+#2#{} Mult per",
-                    "round played,",
+                    "{C:mult}+X#2#{} Mult per",
+                    "hand played,",
+                    "Times current ammount",
+                    "when scoring.",
+                    "{C:inactive}currently x#1#{}"
                 },
     },
     blueprint_compat = true,
@@ -535,24 +617,29 @@ SMODS.Joker {
     cost = 5,
     atlas = 'Typ0Atlas',
     pos = { x = 2, y = 1 },
-    config = { extra = { mult_loss = 1, mult = 1 } },
+    config = { extra = { mult_loss = 0.25, mult = 1 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.mult, card.ability.extra.mult_loss } }
     end,
     calculate = function(self, card, context)
-        if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+        if context.before then
            
                 
                 card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_loss
                 return {
-                    message = localize { type = 'variable', key = 'a_mult_minus', vars = { card.ability.extra.mult_loss } },
+                    message = "+X0.25 Mult!",
                     colour = G.C.MULT
                 }
            
         end
         if context.joker_main then
             return {
-                mult = card.ability.extra.mult
+                Xmult_mod = card.ability.extra.mult,
+                message = localize {
+                        type = 'variable',
+                        key = 'a_xmult',
+                        vars = { card.ability.extra.mult }
+                    }
             }
         end
     end
@@ -585,7 +672,7 @@ SMODS.Joker {
             --play_sound('Typ0_feces', 1, 100) --id like to get this to play only when chips are actually given but xchips makes a message that sound doesnt support so id have to have a second message which i dont want
             return {
                 
-                xchips = math.max(0, card.ability.extra.mult * (G.GAME.starting_deck_size - #G.playing_cards)),
+                xchips = math.max(0, card.ability.extra.mult * (G.GAME.starting_deck_size - #G.playing_cards)) + 1.5,
                 message = "Oozed!",
                 colour = G.C.GREEN,
                 sound = 'Typ0_feces',
@@ -859,7 +946,7 @@ SMODS.Booster {
     atlas = "Typ0Boosters",
     pos = { x = 0, y = 0 },
     config = { extra = 3, choose = 1 },
-    
+
     loc_vars = function(self, info_queue, card)
         local cfg = (card and card.ability) or self.config
         return {
@@ -889,6 +976,7 @@ SMODS.Booster {
     atlas = "Typ0Boosters",
     pos = { x = 1, y = 0 },
     config = { extra = 4, choose = 1 },
+
     
     loc_vars = function(self, info_queue, card)
         local cfg = (card and card.ability) or self.config
@@ -920,6 +1008,8 @@ SMODS.Booster {
     atlas = "Typ0Boosters",
     pos = { x = 2, y = 0 },
     config = { extra = 6, choose = 2 },
+
+
     
     loc_vars = function(self, info_queue, card)
         local cfg = (card and card.ability) or self.config
