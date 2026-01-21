@@ -605,7 +605,7 @@ SMODS.Joker {
                 text = {
                     "{C:mult}+X#2#{} Mult per",
                     "hand played,",
-                    "Times current ammount",
+                    "Times current amount",
                     "when scoring.",
                     "{C:inactive}currently x#1#{}"
                 },
@@ -662,7 +662,7 @@ SMODS.Joker {
     atlas = "Typ0Atlas",
     pos = { x = 3, y = 1 },
 	soul_pos = { x = 5, y = 1 },
-    config = { extra = { mult = 1.5 } },
+    config = { extra = { mult = 1.25 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.mult, math.max(0, card.ability.extra.mult * (G.playing_cards and (G.GAME.starting_deck_size - #G.playing_cards) or 0)), G.GAME.starting_deck_size } }
     end,
@@ -672,7 +672,7 @@ SMODS.Joker {
             --play_sound('Typ0_feces', 1, 100) --id like to get this to play only when chips are actually given but xchips makes a message that sound doesnt support so id have to have a second message which i dont want
             return {
                 
-                xchips = math.max(0, card.ability.extra.mult * (G.GAME.starting_deck_size - #G.playing_cards)) + 1.5,
+                xchips = math.max(0, card.ability.extra.mult * (G.GAME.starting_deck_size - #G.playing_cards)) + 1.75,
                 message = "Oozed!",
                 colour = G.C.GREEN,
                 sound = 'Typ0_feces',
@@ -752,7 +752,7 @@ SMODS.Edition {
     
     config = { card_limit = -1 },
     in_shop = true,
-    weight = 3,
+    weight = 15,
     extra_cost = 5,
     sound = { sound = "polychrome", per = 1.5, vol = 0.4 },
     loc_vars = function(self, info_queue, card)
