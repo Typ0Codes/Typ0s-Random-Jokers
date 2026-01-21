@@ -1,18 +1,3 @@
---[[
-------------------------------Basic Table of Contents------------------------------
-Line 17, Atlas ---------------- Explains the parts of the atlas.
-Line 29, Joker 2 -------------- Explains the basic structure of a joker
-Line 88, Runner 2 ------------- Uses a bit more complex contexts, and shows how to scale a value.
-Line 127, Golden Joker 2 ------ Shows off a specific function that's used to add money at the end of a round.
-Line 163, Merry Andy 2 -------- Shows how to use add_to_deck and remove_from_deck.
-Line 207, Sock and Buskin 2 --- Shows how you can retrigger cards and check for faces
-Line 240, Perkeo 2 ------------ Shows how to use the event manager, eval_status_text, randomness, and soul_pos.
-Line 310, Walkie Talkie 2 ----- Shows how to look for multiple specific ranks, and explains returning multiple values
-Line 344, Gros Michel 2 ------- Shows the no_pool_flag, sets a pool flag, another way to use randomness, and end of round stuff.
-Line 418, Cavendish 2 --------- Shows yes_pool_flag, has X Mult, mainly to go with Gros Michel 2.
-Line 482, Castle 2 ------------ Shows the use of reset_game_globals and colour variables in loc_vars, as well as what a hook is and how to use it.
---]]
-
 SMODS.Atlas({
 	key = "modicon",
 	path = "modicon.png",
@@ -20,37 +5,37 @@ SMODS.Atlas({
 	py = 32
 })
 
---Creates an atlas for cards to use
+
 SMODS.Atlas {
-	-- Key for code to find it with
+
 	key = "Typ0Atlas",
-	-- The name of the file, for the code to pull the atlas from
+
 	path = "Typ0Atlas.png",
-	-- Width of each sprite in 1x size
+
 	px = 71,
-	-- Height of each sprite in 1x size
+
 	py = 95
 }
 
 SMODS.Atlas {
-	-- Key for code to find it with
+
 	key = "KissedStamp",
-	-- The name of the file, for the code to pull the atlas from
+
 	path = "KissedStamp.png",
-	-- Width of each sprite in 1x size
+
 	px = 71,
-	-- Height of each sprite in 1x size
+
 	py = 95
 }
 
 SMODS.Atlas {
-	-- Key for code to find it with
+
 	key = "Typ0Boosters",
-	-- The name of the file, for the code to pull the atlas from
+
 	path = "Typ0Boosters.png",
-	-- Width of each sprite in 1x size
+
 	px = 71,
-	-- Height of each sprite in 1x size
+
 	py = 95
 }
 
@@ -269,7 +254,7 @@ SMODS.Joker{
     atlas = "Typ0Atlas",
     pos = { x = 0, y = 1 },
 	soul_pos = { x = 4, y = 1 },
-    blueprint_compat = false,
+    blueprint_compat = true,
     --this is left out of the typ0 pool due to beind legendary
     loc_txt = {
         name = "Boykisser",
@@ -332,7 +317,7 @@ SMODS.Joker {
 	pos = { x = 2, y = 0 },
 
 	cost = 2,
-    blueprint_compat = false,
+    blueprint_compat = true,
     pools = {["Typ0Addition"] = true},
 
 	calculate = function(self, card, context)
@@ -369,7 +354,7 @@ SMODS.Joker {
     atlas = 'Typ0Atlas',
     pos = { x = 3, y = 0 },
     cost = 2,
-    blueprint_compat = false,
+    blueprint_compat = true,
     pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
@@ -503,11 +488,8 @@ SMODS.Joker {
 
             if sevens >= 3 then
                 return {
-                    Xmult_mod = pseudorandom(
-                        '7rands',
-                        card.ability.extra.min,
-                        card.ability.extra.max
-                    ),
+                    remove_default_message = true,
+                    x_mult = pseudorandom('7rands', card.ability.extra.min, card.ability.extra.max),
                     message = "777!",
                     colour = G.C.MULT
                 }
@@ -537,7 +519,7 @@ SMODS.Joker {
     atlas = 'Typ0Atlas',
     pos = { x = 4, y = 0 },
     cost = 5,
-    blueprint_compat = false,
+    blueprint_compat = true,
     pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
@@ -545,13 +527,8 @@ SMODS.Joker {
         if context.individual and context.cardarea == G.play then
             if context.other_card:get_id() == 13 then 
                 return {
-                    Xmult_mod = card.ability.extra.mult,
-                    card = context.other_card,
-                    message = localize {
-                        type = 'variable',
-                        key = 'a_xmult',
-                        vars = { card.ability.extra.mult }
-                    }
+                    x_mult = card.ability.extra.mult,
+                    card = context.other_card
                 }
             end
         end
@@ -571,7 +548,7 @@ SMODS.Joker {
     atlas = 'Typ0Atlas',
     pos = { x = 1, y = 1 },
     cost = 0,
-    blueprint_compat = false,
+    blueprint_compat = true,
     pools = {["Typ0Addition"] = true},
 
     calculate = function(self, card, context)
@@ -687,16 +664,24 @@ SMODS.Joker({
     loc_txt = {
         name = "Polychrome to the Right",
         text = {
-            "Hey grayson is the polychrome to the right",
+            "Always Polychrome.",
+            "If this card is to the right do an extra {C:mult}X1.5{}",
+            "{C:inactive}Hey Grayson is the Polychrome to the Right{}"
         }
     },
+
+    draw = function(self, card, layer)
+        if card.config.center.discovered or card.bypass_discovery_center then
+            card.children.center:draw_shader('polychrome', nil, card.ARGS.send_to_shader)
+        end
+    end,
 
     atlas = "Typ0Atlas",
     pos = { x = 0, y = 2 },
     pools = {["Typ0Addition"] = true},
     rarity = 2,
     cost = 6,
-
+    blueprint_compat = true,
     config = {
         extra = {
             x_mult = 1.5
@@ -791,7 +776,7 @@ SMODS.Joker {
 	pos = { x = 1, y = 2 },
 
 	cost = 2,
-    blueprint_compat = false,
+    blueprint_compat = true,
     --pools = {["Typ0Addition"] = true}, taken out for just being trash
 
 	calculate = function(self, card, context)
@@ -931,7 +916,75 @@ SMODS.Joker {
 	end
 }
 
--- Buffoon Packs
+SMODS.Joker{
+    key = "Pivot",
+
+    loc_txt = {
+        name = "Pivot",
+        text = {
+            "When sold, replace",
+            "all Jokers with",
+            "a completely new set"
+        }
+    },
+
+    rarity = 3,
+    cost = 10,
+    atlas = 'Typ0Atlas',
+
+	pos = {
+        x = 2, y = 2,
+    },
+
+     draw = function(self, card, layer)
+        if card.config.center.discovered or card.bypass_discovery_center then
+            card.children.center:draw_shader('voucher', nil, card.ARGS.send_to_shader)
+        end
+    end,
+
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = false,
+
+    remove_from_deck = function(self, card, from_debuff)
+        if from_debuff then return end
+        if not G.jokers then return end
+
+
+        if card.ability.extra and card.ability.extra.used then return end
+        card.ability.extra = card.ability.extra or {}
+        card.ability.extra.used = true
+
+
+        local old_jokers = {}
+        for _, j in ipairs(G.jokers.cards) do
+            if j ~= card then
+                old_jokers[#old_jokers + 1] = j
+            end
+        end
+
+
+        for _, j in ipairs(old_jokers) do
+            j:start_dissolve()
+            G.jokers:remove_card(j)
+        end
+
+
+        for i = 1, #old_jokers do
+            local new_joker = SMODS.create_card{
+                set = "Joker",
+                area = G.jokers,
+                skip_materialize = true
+            }
+
+            G.jokers:emplace(new_joker)
+            new_joker:start_materialize()
+        end
+    end
+}
+
+
+-- Buffoon Packs -----------------------------------------------------------------------------------------
 SMODS.Booster {
     key = "Typ0Pack1",
     loc_txt= {
@@ -941,7 +994,7 @@ SMODS.Booster {
         group_name = {"Pick a card,"},
     },
     weight = 0.6,
-    kind = 'Typ0Pack', -- You can also use Buffoon if you want it to belong to the vanilla kind
+    kind = 'Typ0Pack',
     cost = 4,
     atlas = "Typ0Boosters",
     pos = { x = 0, y = 0 },
@@ -971,7 +1024,7 @@ SMODS.Booster {
         group_name = {"Any Card,"},
     },
     weight = 0.6,
-    kind = 'Typ0Pack', -- You can also use Buffoon if you want it to belong to the vanilla kind
+    kind = 'Typ0Pack',
     cost = 6,
     atlas = "Typ0Boosters",
     pos = { x = 1, y = 0 },
@@ -1003,7 +1056,7 @@ SMODS.Booster {
         group_name = {"Oh also buy Shipped In Space"},
     },
     weight = 0.15,
-    kind = 'Typ0Pack', -- You can also use Buffoon if you want it to belong to the vanilla kind
+    kind = 'Typ0Pack',
     cost = 8,
     atlas = "Typ0Boosters",
     pos = { x = 2, y = 0 },
@@ -1067,14 +1120,7 @@ SMODS.Tag {
 
 
 
---[[ This is called a hook. It's a less intrusive way of running your code when base game functions
-	get called than lovely injections. It works by saving the base game function, local igo, then
-	overwriting the current function with your own. You then run the saved function, igo, to make
-	the function do everything it was previously already doing, and then you add your code in, so
-	that it runs either before or after the rest of the function gets used.
-							
-	This function hooks into Game:init_game_object in order to create the custom
-	G.GAME.current_round.castle2_card variable that the above joker uses whenever a run starts.]]
+
 local igo = Game.init_game_object
 function Game:init_game_object()
 	local ret = igo(self)
@@ -1082,24 +1128,23 @@ function Game:init_game_object()
 	return ret
 end
 
--- This is a part 2 of the above thing, to make the custom G.GAME variable change every round.
-function SMODS.current_mod.reset_game_globals(run_start)
-	-- The suit changes every round, so we use reset_game_globals to choose a suit.
-	G.GAME.current_round.castle2_card = { suit = 'Spades' }
-	local valid_castle_cards = {}
-	for _, v in ipairs(G.playing_cards) do
-		if not SMODS.has_no_suit(v) then -- Abstracted enhancement check for jokers being able to give cards additional enhancements
-			valid_castle_cards[#valid_castle_cards + 1] = v
-		end
-	end
-	if valid_castle_cards[1] then
-		local castle_card = pseudorandom_element(valid_castle_cards, pseudoseed('2cas' .. G.GAME.round_resets.ante))
-		G.GAME.current_round.castle2_card.suit = castle_card.base.suit
-	end
-end
 
--- TODO:
--- Have people proofread, make sure my overly long way of writing is actually legible or cut down to make sure it's legible.
+function SMODS.current_mod.reset_game_globals(run_start)
+    G.GAME.current_round.castle2_card = { suit = 'Spades' }
+
+    local valid_castle_cards = {}
+    for _, v in ipairs(G.playing_cards) do
+        valid_castle_cards[#valid_castle_cards + 1] = v
+    end
+
+    if valid_castle_cards[1] then
+        local castle_card = pseudorandom_element(
+            valid_castle_cards,
+            pseudoseed('2cas' .. G.GAME.round_resets.ante)
+        )
+        G.GAME.current_round.castle2_card.suit = castle_card.base.suit
+    end
+end
 
 
 ----------------------------------------------

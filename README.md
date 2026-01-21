@@ -51,3 +51,13 @@ Reworked
 -A few other things i forgor
 
 fixed bugs
+
+## 1.7
+
+Added 
+-Pivot when discarded destroy all jokers and give a new set of jokers
+-Blueprint support for most jokers
+
+Reworked
+-Polychrome to the right's text
+-Gelatinous cube
