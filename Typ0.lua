@@ -929,7 +929,7 @@ SMODS.Joker{
     },
 
     rarity = 3,
-    cost = 10,
+    cost = 1,
     atlas = 'Typ0Atlas',
 
 	pos = {

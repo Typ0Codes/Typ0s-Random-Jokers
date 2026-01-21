@@ -5,9 +5,9 @@
     "description": "Adds some jokers to the game",
     "prefix": "Typ0",
     "main_file": "Typ0.lua",
-    "badge_colour": "c7638f",
+    "badge_colour": "a4c2f4",
     "dependencies": [
         "Steamodded (>=1.0.0~ALPHA-1225a)"
     ],
-    "version": "1.0.7"
+    "version": "1.1.7"
 }
