@@ -924,23 +924,15 @@ SMODS.Joker{
         text = {
             "When sold, replace",
             "all Jokers with",
-            "a completely new set"
+            "new Jokers of the",
+            "same rarity"
         }
     },
 
     rarity = 3,
     cost = 1,
-    atlas = 'Typ0Atlas',
-
-	pos = {
-        x = 2, y = 2,
-    },
-
-     draw = function(self, card, layer)
-        if card.config.center.discovered or card.bypass_discovery_center then
-            card.children.center:draw_shader('voucher', nil, card.ARGS.send_to_shader)
-        end
-    end,
+    atlas = "Typ0Atlas",
+    pos = { x = 2, y = 2 },
 
     blueprint_compat = false,
     eternal_compat = false,
@@ -948,40 +940,59 @@ SMODS.Joker{
 
     remove_from_deck = function(self, card, from_debuff)
         if from_debuff then return end
-        if not G.jokers then return end
+        if not G.jokers or not G.jokers.cards then return end
 
-
-        if card.ability.extra and card.ability.extra.used then return end
-        card.ability.extra = card.ability.extra or {}
-        card.ability.extra.used = true
-
-
-        local old_jokers = {}
+        -- collect rarities of jokers to replace
+        local rarities = {}
         for _, j in ipairs(G.jokers.cards) do
-            if j ~= card then
-                old_jokers[#old_jokers + 1] = j
+            if j ~= card and j.config and j.config.center then
+                rarities[#rarities + 1] = j.config.center.rarity
             end
         end
 
-
-        for _, j in ipairs(old_jokers) do
-            j:start_dissolve()
-            G.jokers:remove_card(j)
+        -- remove old jokers safely (backward iteration)
+        for i = #G.jokers.cards, 1, -1 do
+            local j = G.jokers.cards[i]
+            if j ~= card then
+                j:start_dissolve()
+                G.jokers:remove_card(j)
+            end
         end
 
+        -- rebuild using SAME rarities
+        for _, rarity in ipairs(rarities) do
+            local pool = {}
 
-        for i = 1, #old_jokers do
-            local new_joker = SMODS.create_card{
-                set = "Joker",
-                area = G.jokers,
-                skip_materialize = true
-            }
+            for _, center in pairs(G.P_CENTER_POOLS.Joker) do
+                if center.rarity == rarity
+                and not center.demo
+                and center.key ~= card.config.center.key
+                then
+                    pool[#pool + 1] = center
+                end
+            end
 
-            G.jokers:emplace(new_joker)
-            new_joker:start_materialize()
+            if #pool > 0 then
+                local center = pseudorandom_element(
+                    pool,
+                    pseudoseed('pivot_' .. rarity)
+                )
+
+                local new_joker = SMODS.create_card{
+                    key = center.key,
+                    area = G.jokers,
+                    skip_materialize = true
+                }
+
+                G.jokers:emplace(new_joker)
+                new_joker:start_materialize()
+            end
         end
     end
+
 }
+
+
 
 
 -- Buffoon Packs -----------------------------------------------------------------------------------------
@@ -1149,3 +1160,6 @@ end
 
 ----------------------------------------------
 ------------MOD CODE END----------------------
+
+
+
