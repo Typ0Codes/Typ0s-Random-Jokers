@@ -942,7 +942,7 @@ SMODS.Joker{
         if from_debuff then return end
         if not G.jokers or not G.jokers.cards then return end
 
-        -- collect rarities of jokers to replace
+
         local rarities = {}
         for _, j in ipairs(G.jokers.cards) do
             if j ~= card and j.config and j.config.center then
@@ -950,7 +950,6 @@ SMODS.Joker{
             end
         end
 
-        -- remove old jokers safely (backward iteration)
         for i = #G.jokers.cards, 1, -1 do
             local j = G.jokers.cards[i]
             if j ~= card then
@@ -959,7 +958,7 @@ SMODS.Joker{
             end
         end
 
-        -- rebuild using SAME rarities
+
         for _, rarity in ipairs(rarities) do
             local pool = {}
 
