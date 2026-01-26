@@ -739,7 +739,7 @@ SMODS.Edition {
     in_shop = true,
     weight = 15,
     extra_cost = 5,
-    sound = { sound = "polychrome", per = 1.5, vol = 0.4 },
+    sound = { sound = "polychrome1", per = 1.5, vol = 0.4 },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.edition.card_limit } }
     end,
